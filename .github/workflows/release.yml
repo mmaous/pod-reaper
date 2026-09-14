@@ -13,24 +13,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.27.0'
-          
+
       - name: Build and Package
         env:
           CGO_ENABLED: 0
         run: |
           # Build and package arm64
           GOOS=linux GOARCH=arm64 go build -o pod-reaper .
-          tar -czvf pod-reaper-linux-arm64.tar.gz pod-reaper pod-reaper.service README.md LICENSE
-          
+          tar -czvf pod-reaper-linux-arm64.tar.gz pod-reaper pod-reaper.service README.md
+
           # Build and package amd64
           GOOS=linux GOARCH=amd64 go build -o pod-reaper .
-          tar -czvf pod-reaper-linux-amd64.tar.gz pod-reaper pod-reaper.service README.md LICENSE
-          
+          tar -czvf pod-reaper-linux-amd64.tar.gz pod-reaper pod-reaper.service README.md
+
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
