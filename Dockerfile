@@ -1,4 +1,4 @@
-FROM golang:1.22-bookworm AS build
+FROM golang:1.27.0-bookworm AS build
 WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
