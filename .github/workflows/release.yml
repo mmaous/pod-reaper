@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          
+      - name: Build
+        env:
+          CGO_ENABLED: 0
+        run: |
+          GOOS=linux GOARCH=arm64 go build -o pod-reaper-linux-arm64 .
+          GOOS=linux GOARCH=amd64 go build -o pod-reaper-linux-amd64 .
+          
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            pod-reaper-linux-arm64
+            pod-reaper-linux-amd64
+          generate_release_notes: true
