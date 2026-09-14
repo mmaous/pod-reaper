@@ -22,7 +22,7 @@ Run it as a oneshot systemd service on your nodes so it fires 3 minutes after th
 1. Download release tarball:
 ```bash
 # Example for arm64 (M1/M2/arm VMs)
-wget https://github.com/YOUR_ORG/pod-reaper/releases/download/v1.0.0/pod-reaper-linux-arm64.tar.gz
+wget https://github.com/mmaous/pod-reaper/releases/download/v1.0.0/pod-reaper-linux-arm64.tar.gz
 tar -xzvf pod-reaper-linux-arm64.tar.gz
 ```
 
