@@ -8,7 +8,7 @@ Type=oneshot
 ExecStartPre=/bin/sleep 180
 ExecStart=/usr/local/bin/pod-reaper
 Environment="KUBECONFIG=/etc/kubernetes/admin.conf"
-Environment="DRY_RUN=false"
+Environment="DRY_RUN=true"
 Environment="PENDING_THRESHOLD=5m"
 Environment="TERMINATING_THRESHOLD=2m"
 Environment="NOT_READY_THRESHOLD=5m"
