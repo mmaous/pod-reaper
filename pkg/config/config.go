@@ -82,6 +82,6 @@ func Load() *Config {
 		CrashLoopRestarts:    getEnvInt("CRASHLOOP_RESTART_THRESHOLD", 6),
 		ExcludeNamespaces:    m,
 		ExcludeLabelSelector: getEnv("EXCLUDE_LABEL_SELECTOR", ""),
-		KubeconfigPath:       getEnv("KUBECONFIG_PATH", ""),
+		KubeconfigPath:       getEnv("KUBECONFIG", ""),
 	}
 }
