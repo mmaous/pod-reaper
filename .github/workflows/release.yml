@@ -25,11 +25,11 @@ jobs:
         run: |
           # Build and package arm64
           GOOS=linux GOARCH=arm64 go build -o pod-reaper .
-          tar -czvf pod-reaper-linux-arm64.tar.gz pod-reaper -C systemd pod-reaper.service pod-reaper.timer -C ../../ README.md
-
+          tar -czvf pod-reaper-linux-arm64.tar.gz pod-reaper -C systemd pod-reaper.service pod-reaper.timer -C ../ README.md
+          
           # Build and package amd64
           GOOS=linux GOARCH=amd64 go build -o pod-reaper .
-          tar -czvf pod-reaper-linux-amd64.tar.gz pod-reaper -C systemd pod-reaper.service pod-reaper.timer -C ../../ README.md
+          tar -czvf pod-reaper-linux-amd64.tar.gz pod-reaper -C systemd pod-reaper.service pod-reaper.timer -C ../ README.md
 
       - name: Release
         uses: softprops/action-gh-release@v2
