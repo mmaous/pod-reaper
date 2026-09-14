@@ -1,0 +1,9 @@
+[Unit]
+Description=Run Pod Reaper 3 minutes after boot
+
+[Timer]
+OnBootSec=3min
+Unit=pod-reaper.service
+
+[Install]
+WantedBy=timers.target

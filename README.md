@@ -26,17 +26,22 @@ wget https://github.com/mmaous/pod-reaper/releases/download/v1.0.0/pod-reaper-li
 tar -xzvf pod-reaper-linux-arm64.tar.gz
 ```
 
-2. Install binary and service:
+2. Install binary and systemd units:
 ```bash
 sudo mv pod-reaper /usr/local/bin/
 sudo chmod +x /usr/local/bin/pod-reaper
-sudo mv pod-reaper.service /etc/systemd/system/
+sudo mv pod-reaper.service pod-reaper.timer /etc/systemd/system/
 ```
 
-3. Enable and start:
+3. Enable timer for automatic boot cleanup:
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable pod-reaper.service
+sudo systemctl enable --now pod-reaper.timer
+```
+
+4. Run manually on-demand:
+```bash
+sudo systemctl start pod-reaper.service
 ```
 
 Service starts in `DRY_RUN=true`. Check `journalctl -u pod-reaper.service` to make sure it's not killing anything important. When ready, edit `/etc/systemd/system/pod-reaper.service`, flip to `DRY_RUN=false`, and `systemctl daemon-reload`.

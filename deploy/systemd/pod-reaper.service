@@ -4,8 +4,6 @@ After=kubelet.service
 
 [Service]
 Type=oneshot
-# Wait 3 minutes after boot to allow normal components to stabilize
-ExecStartPre=/bin/sleep 180
 ExecStart=/usr/local/bin/pod-reaper
 Environment="KUBECONFIG=/etc/kubernetes/admin.conf"
 Environment="DRY_RUN=true"
