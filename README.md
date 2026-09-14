@@ -19,20 +19,21 @@ Ever sleep your laptop running minikube, or suspend your VMs, and wake up to hal
 
 Run it as a oneshot systemd service on your nodes so it fires 3 minutes after the VM boots.
 
-1. Build it:
+1. Download release tarball:
 ```bash
-go build -o pod-reaper .
+# Example for arm64 (M1/M2/arm VMs)
+wget https://github.com/YOUR_ORG/pod-reaper/releases/download/v1.0.0/pod-reaper-linux-arm64.tar.gz
+tar -xzvf pod-reaper-linux-arm64.tar.gz
 ```
 
-2. Drop the binary on your node:
+2. Install binary and service:
 ```bash
 sudo mv pod-reaper /usr/local/bin/
 sudo chmod +x /usr/local/bin/pod-reaper
+sudo mv pod-reaper.service /etc/systemd/system/
 ```
 
-3. Drop the systemd unit `pod-reaper.service` into `/etc/systemd/system/`.
-
-4. Enable it:
+3. Enable and start:
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl enable pod-reaper.service

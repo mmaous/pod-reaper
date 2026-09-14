@@ -19,17 +19,22 @@ jobs:
         with:
           go-version: '1.27.0'
           
-      - name: Build
+      - name: Build and Package
         env:
           CGO_ENABLED: 0
         run: |
-          GOOS=linux GOARCH=arm64 go build -o pod-reaper-linux-arm64 .
-          GOOS=linux GOARCH=amd64 go build -o pod-reaper-linux-amd64 .
+          # Build and package arm64
+          GOOS=linux GOARCH=arm64 go build -o pod-reaper .
+          tar -czvf pod-reaper-linux-arm64.tar.gz pod-reaper pod-reaper.service README.md LICENSE
+          
+          # Build and package amd64
+          GOOS=linux GOARCH=amd64 go build -o pod-reaper .
+          tar -czvf pod-reaper-linux-amd64.tar.gz pod-reaper pod-reaper.service README.md LICENSE
           
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            pod-reaper-linux-arm64
-            pod-reaper-linux-amd64
+            pod-reaper-linux-arm64.tar.gz
+            pod-reaper-linux-amd64.tar.gz
           generate_release_notes: true
