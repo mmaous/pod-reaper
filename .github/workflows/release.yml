@@ -23,28 +23,6 @@ jobs:
         env:
           CGO_ENABLED: 0
         run: |
-          # Generate service file
-          cat <<EOF > pod-reaper.service
-          [Unit]
-          Description=Pod Reaper Boot Cleanup
-          After=kubelet.service
-
-          [Service]
-          Type=oneshot
-          ExecStartPre=/bin/sleep 180
-          ExecStart=/usr/local/bin/pod-reaper
-          Environment="KUBECONFIG=/etc/kubernetes/admin.conf"
-          Environment="DRY_RUN=false"
-          Environment="PENDING_THRESHOLD=5m"
-          Environment="TERMINATING_THRESHOLD=2m"
-          Environment="NOT_READY_THRESHOLD=5m"
-          Environment="CRASHLOOP_RESTART_THRESHOLD=6"
-          Environment="EXCLUDE_NAMESPACES="
-
-          [Install]
-          WantedBy=multi-user.target
-          EOF
-
           # Build and package arm64
           GOOS=linux GOARCH=arm64 go build -o pod-reaper .
           tar -czvf pod-reaper-linux-arm64.tar.gz pod-reaper pod-reaper.service README.md

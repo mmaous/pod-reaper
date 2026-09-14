@@ -1,0 +1,20 @@
+[Unit]
+Description=Pod Reaper Boot Cleanup
+After=kubelet.service
+
+[Service]
+Type=oneshot
+# Wait 3 minutes after boot to allow normal components to stabilize
+ExecStartPre=/bin/sleep 180
+ExecStart=/usr/local/bin/pod-reaper
+Environment="KUBECONFIG=/etc/kubernetes/admin.conf"
+Environment="DRY_RUN=false"
+Environment="PENDING_THRESHOLD=5m"
+Environment="TERMINATING_THRESHOLD=2m"
+Environment="NOT_READY_THRESHOLD=5m"
+Environment="CRASHLOOP_RESTART_THRESHOLD=6"
+Environment="EXCLUDE_NAMESPACES="
+# Environment="EXCLUDE_LABEL_SELECTOR=component=etcd,tier=control-plane" # Use to protect specific critical pods if needed
+
+[Install]
+WantedBy=multi-user.target
