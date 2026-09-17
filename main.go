@@ -4,11 +4,10 @@ import (
 	"context"
 	"log"
 	"os/signal"
-	"syscall"
-
 	"pod-reaper/pkg/config"
 	"pod-reaper/pkg/k8s"
 	"pod-reaper/pkg/reaper"
+	"syscall"
 )
 
 func main() {

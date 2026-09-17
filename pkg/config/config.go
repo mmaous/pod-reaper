@@ -3,6 +3,7 @@ package config
 import (
 	"log"
 	"os"
+	"pod-reaper/internal/strutil"
 	"strconv"
 	"strings"
 	"time"
@@ -33,7 +34,7 @@ func getEnvDuration(key string, def time.Duration) time.Duration {
 	}
 	d, err := time.ParseDuration(v)
 	if err != nil {
-		log.Printf("bad duration %s=%q, using default %s", key, v, def)
+		log.Printf("bad duration %s=%q, using default %s", key, strutil.SanitizeForLog(v), def) //nolint:gosec // G706: v is sanitized via strutil.SanitizeForLog above
 		return def
 	}
 	return d
@@ -46,7 +47,7 @@ func getEnvInt(key string, def int) int {
 	}
 	i, err := strconv.Atoi(v)
 	if err != nil {
-		log.Printf("bad int %s=%q, using default %d", key, v, def)
+		log.Printf("bad int %s=%q, using default %d", key, strutil.SanitizeForLog(v), def) //nolint:gosec // G706: v is sanitized via strutil.SanitizeForLog above
 		return def
 	}
 	return i
@@ -59,7 +60,7 @@ func getEnvBool(key string, def bool) bool {
 	}
 	b, err := strconv.ParseBool(v)
 	if err != nil {
-		log.Printf("bad bool %s=%q, using default %v", key, v, def)
+		log.Printf("bad bool %s=%q, using default %v", key, strutil.SanitizeForLog(v), def) //nolint:gosec // G706: v is sanitized via strutil.SanitizeForLog above
 		return def
 	}
 	return b

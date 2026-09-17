@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"time"
 
-	corev1 "k8s.io/api/core/v1"
+	"pod-reaper/internal/numutil"
 	"pod-reaper/pkg/config"
+
+	corev1 "k8s.io/api/core/v1"
 )
 
 // StuckReason returns non-empty reason string if pod is stuck,
@@ -40,7 +42,7 @@ func StuckReason(p *corev1.Pod, cfg *config.Config, now time.Time) (reason strin
 
 	for _, cs := range p.Status.ContainerStatuses {
 		if cs.State.Waiting != nil {
-			if cs.State.Waiting.Reason == "CrashLoopBackOff" && cs.RestartCount >= int32(cfg.CrashLoopRestarts) {
+			if cs.State.Waiting.Reason == "CrashLoopBackOff" && cs.RestartCount >= numutil.ClampToInt32(cfg.CrashLoopRestarts) {
 				return fmt.Sprintf("CrashLoopBackOff restarts=%d", cs.RestartCount), false
 			}
 			if cs.State.Waiting.Reason == "CreateContainerError" || cs.State.Waiting.Reason == "CreateContainerConfigError" || cs.State.Waiting.Reason == "ContainerCreating" {
