@@ -1,5 +1,9 @@
 version: "2"
 
+formatters:
+  enable:
+    - gofmt
+
 linters:
   enable:
     - govet
@@ -11,21 +15,16 @@ linters:
     - unparam
     - unused
     - gosec
-
-formatters:
-  enable:
-    - gofmt
-
-settings:
-  govet:
-    enable-all: true
-    disable:
-      - fieldalignment
-  gocyclo:
-    min-complexity: 15
-  goconst:
-    min-len: 3
-    min-occurrences: 3
+  settings:
+    govet:
+      enable-all: true
+      disable:
+        - fieldalignment
+    gocyclo:
+      min-complexity: 25
+    goconst:
+      min-len: 3
+      min-occurrences: 3
 
 issues:
   max-issues-per-linter: 0

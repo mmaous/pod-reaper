@@ -18,4 +18,4 @@ jobs:
         uses: golangci/golangci-lint-action@v9
         with:
           version: v2.13.2
-          args: --timeout=5m
+          args: --timeout=5m --config=.golangci.yml
