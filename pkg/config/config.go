@@ -76,10 +76,10 @@ func Load() *Config {
 	}
 	return &Config{
 		DryRun:               getEnvBool("DRY_RUN", true),
-		PendingThreshold:     getEnvDuration("PENDING_THRESHOLD", 5*time.Minute),
+		PendingThreshold:     getEnvDuration("PENDING_THRESHOLD", 2*time.Minute),
 		TerminatingThreshold: getEnvDuration("TERMINATING_THRESHOLD", 2*time.Minute),
-		NotReadyThreshold:    getEnvDuration("NOT_READY_THRESHOLD", 5*time.Minute),
-		CrashLoopRestarts:    getEnvInt("CRASHLOOP_RESTART_THRESHOLD", 6),
+		NotReadyThreshold:    getEnvDuration("NOT_READY_THRESHOLD", 2*time.Minute),
+		CrashLoopRestarts:    getEnvInt("CRASHLOOP_RESTART_THRESHOLD", 3),
 		ExcludeNamespaces:    m,
 		ExcludeLabelSelector: getEnv("EXCLUDE_LABEL_SELECTOR", ""),
 		KubeconfigPath:       getEnv("KUBECONFIG", ""),

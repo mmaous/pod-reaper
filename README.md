@@ -10,14 +10,22 @@ Ever sleep your laptop running minikube, or suspend your VMs, and wake up to hal
 
 | State | Condition |
 |---|---|
+| Time Traveled | Pod has a negative age (future timestamp) caused by host sleep/wake cycle |
 | Terminating | Stuck deleting past `2m` (force kills `grace=0`) |
-| Pending | Stuck unscheduled or waiting on CNI past `5m` |
-| Running | `NotReady` (0/1, 0/2) past `5m` |
-| CrashLoopBackOff | Restarts exceed `6` |
+| Pending | Stuck unscheduled or waiting on CNI past `2m` |
+| Running | `NotReady` (0/1, 0/2) past `2m` |
+| CrashLoopBackOff | Restarts exceed `3` |
+| ContainerCreating | Pod is stuck trying to create a container past `2m` |
+| CreateContainerError | Pod is stuck trying to create a container |
+| CreateContainerConfigError | Pod is stuck trying to create a container due to bad config |
 
 ## How to use
 
-Run it as a oneshot systemd service on your nodes so it fires 3 minutes after the VM boots.
+Run it as a oneshot systemd service on your nodes. 3 minutes after the VM boots, the systemd unit will:
+1. Restart `containerd` and `kubelet` to unfreeze the network and static pods.
+2. Wait 60 seconds for the cluster to re-sync.
+3. Automatically ignore any static pods (identified by the `kubernetes.io/config.mirror` annotation).
+4. Force delete the remaining broken application pods.
 
 1. Download release tarball:
 ```bash

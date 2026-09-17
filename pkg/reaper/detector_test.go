@@ -83,6 +83,22 @@ func TestStuckReason(t *testing.T) {
 		}
 	})
 
+	// 4b. Negative Age (Time Jump)
+	t.Run("NegativeAgeTimeJump", func(t *testing.T) {
+		p := &corev1.Pod{
+			ObjectMeta: metav1.ObjectMeta{
+				CreationTimestamp: metav1.NewTime(now.Add(10 * time.Minute)), // Future timestamp
+			},
+			Status: corev1.PodStatus{
+				Phase: corev1.PodPending,
+			},
+		}
+		reason, force := StuckReason(p, cfg, now)
+		if reason == "" || !force {
+			t.Errorf("expected time jump detection with force=true, got reason=%q, force=%v", reason, force)
+		}
+	})
+
 	// 5. CrashLoopBackOff with high restarts
 	t.Run("CrashLoopBackOff", func(t *testing.T) {
 		p := &corev1.Pod{
@@ -106,7 +122,51 @@ func TestStuckReason(t *testing.T) {
 		}
 	})
 
-	// 6. Healthy pod -> empty reason
+	// 6. CreateContainerError
+	t.Run("CreateContainerError", func(t *testing.T) {
+		p := &corev1.Pod{
+			Status: corev1.PodStatus{
+				Phase: corev1.PodRunning,
+				ContainerStatuses: []corev1.ContainerStatus{
+					{
+						State: corev1.ContainerState{
+							Waiting: &corev1.ContainerStateWaiting{
+								Reason: "CreateContainerError",
+							},
+						},
+					},
+				},
+			},
+		}
+		reason, force := StuckReason(p, cfg, now)
+		if reason == "" || force {
+			t.Errorf("expected stuck CreateContainerError with force=false, got reason=%q, force=%v", reason, force)
+		}
+	})
+
+	// 7. CreateContainerConfigError
+	t.Run("CreateContainerConfigError", func(t *testing.T) {
+		p := &corev1.Pod{
+			Status: corev1.PodStatus{
+				Phase: corev1.PodRunning,
+				ContainerStatuses: []corev1.ContainerStatus{
+					{
+						State: corev1.ContainerState{
+							Waiting: &corev1.ContainerStateWaiting{
+								Reason: "CreateContainerConfigError",
+							},
+						},
+					},
+				},
+			},
+		}
+		reason, force := StuckReason(p, cfg, now)
+		if reason == "" || force {
+			t.Errorf("expected stuck CreateContainerConfigError with force=false, got reason=%q, force=%v", reason, force)
+		}
+	})
+
+	// 8. Healthy pod -> empty reason
 	t.Run("HealthyPod", func(t *testing.T) {
 		p := &corev1.Pod{
 			Status: corev1.PodStatus{
@@ -136,11 +196,20 @@ func TestShouldSkip(t *testing.T) {
 
 	p1 := &corev1.Pod{ObjectMeta: metav1.ObjectMeta{Namespace: "kube-system"}}
 	p2 := &corev1.Pod{ObjectMeta: metav1.ObjectMeta{Namespace: "default"}}
+	p3 := &corev1.Pod{
+		ObjectMeta: metav1.ObjectMeta{
+			Namespace:   "default",
+			Annotations: map[string]string{"kubernetes.io/config.mirror": "some-hash"},
+		},
+	}
 
 	if !ShouldSkip(p1, cfg) {
 		t.Errorf("expected p1 in kube-system to be skipped")
 	}
 	if ShouldSkip(p2, cfg) {
 		t.Errorf("expected p2 in default not to be skipped")
+	}
+	if !ShouldSkip(p3, cfg) {
+		t.Errorf("expected p3 static mirror pod to be skipped")
 	}
 }
